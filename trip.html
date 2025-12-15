@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 岡山之旅✈️</title>
+    <title>2026 岡山瀨戶內海之旅 (V8.0 時間排序與優化版) ✈️</title>
     <style>
         /* CSS 變數：所有顏色都定義在這裡 */
         :root {
@@ -409,7 +409,7 @@
     </div>
 
     <script>
-        // --- 主題設定 (無變動) ---
+        // --- 主題設定 ---
         const THEMES = {
             'setouchi': { 
                 name: '瀨戶內海藍', primary: '#2c3e50', accent: '#e67e22', bg: '#f4f6f7', card: '#ffffff', text: '#333'
@@ -422,7 +422,7 @@
             }
         };
 
-        // --- 行程資料 (已檢查 JSON 格式) ---
+        // --- 行程資料 ---
         const defaultData = {
             "2026-01-10": { label: "1/10 (六)", location: "📍 倉敷", items: [{ time: "上午", activity: "抵達倉敷 → 入住小木屋", note: "先寄放行李或辦理入住", url: "" }, { time: "下午", activity: "倉敷美觀地區", note: "大原美術館、運河散步", url: "" }, { time: "晚上", activity: "倉敷老街晚餐", note: "找間咖啡廳或小酒館享受氛圍", url: "" }, { time: "住宿", activity: "倉敷小木屋", note: "休息養精蓄銳", url: "" }] },
             "2026-01-11": { label: "1/11 (日)", location: "📍 直島一日遊", items: [{ time: "08:00", activity: "宇野港", note: "搭船前往直島宮浦港", url: "" }, { time: "上午", activity: "直島家計劃", note: "ANDO MUSEUM、南寺、碁會所/角屋", url: "" }, { time: "中午", activity: "本村午餐", note: "本村地區享用午餐", url: "" }, { time: "下午", activity: "Benesse House Museum", note: "戶外作品散步、必拍黃南瓜🟡", url: "" }, { time: "傍晚", activity: "宇野港", note: "搭船回程 → 回倉敷", url: "" }] },
@@ -441,7 +441,7 @@
         const root = document.documentElement;
         const DATA_STORAGE_KEY = 'trip_data_v7'; 
 
-        // --- 主題函數 (無變動) ---
+        // --- 主題函數 ---
         function saveTheme(themeName, colors = null) {
             const themeToSave = colors || THEMES[themeName];
             localStorage.setItem('tripTheme', JSON.stringify(themeToSave));
@@ -491,7 +491,7 @@
             closeModal();
         }
 
-        // --- Modal 函數 (無變動) ---
+        // --- Modal 函數 ---
         const modal = document.getElementById('designModal');
         function openModal() { modal.style.display = 'flex'; }
         function closeModal() { modal.style.display = 'none'; }
@@ -508,12 +508,12 @@
          */
         function timeToSortableValue(timeString) {
             const t = timeString.trim().toLowerCase();
-            if (t.match(/^\d{1,2}:\d{2}$/)) { // 修正為支援 1:00 或 11:00
+            if (t.match(/^\d{1,2}:\d{2}$/)) { 
                 const parts = t.split(':');
                 return parseInt(parts[0]) * 60 + parseInt(parts[1]);
             }
             
-            // 處理非標準時間關鍵字，賦予固定數值進行排序 (確保 '選項A' 在 '選項B' 前面)
+            // 處理非標準時間關鍵字，賦予固定數值進行排序
             switch (t) {
                 case '選項a': return 600; // 10:00
                 case '上午': return 660; // 11:00
@@ -537,7 +537,6 @@
                 try {
                     currentData = JSON.parse(saved);
                 } catch (e) {
-                    // 如果資料損毀，使用預設資料
                     currentData = JSON.parse(JSON.stringify(defaultData));
                     console.error("Local data corrupted, using default data.", e);
                 }
@@ -545,7 +544,6 @@
                 currentData = JSON.parse(JSON.stringify(defaultData));
             }
             
-            // 確保有第一天的行程
             const dateKeys = Object.keys(currentData).sort();
             if (!currentData[activeDateKey] && dateKeys.length > 0) {
                 activeDateKey = dateKeys[0];
@@ -567,10 +565,8 @@
                 const element = document.getElementById(hash);
                 if (element) {
                     element.classList.add('highlight');
-                    // 確保滾動到視野範圍內
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     
-                    // 清除 hash，避免下次載入時也高亮
                     setTimeout(() => {
                         window.history.replaceState(null, null, window.location.pathname + window.location.search);
                     }, 2000); 
@@ -655,27 +651,7 @@
             });
         }
 
-        // 輔助函數：根據卡片 ID 找到其在 items 陣列中的索引
-        function findItemIndexById(itemId) {
-            const [dateKey, index] = itemId.split('-');
-            // 注意：這裡只檢查 dateKey 是否等於 activeDateKey，
-            // 由於排序後 index 可能改變，我們必須從頭開始找
-            
-            if (dateKey !== activeDateKey) return -1; 
-            
-            // 由於 renderList() 會排序，index 不再是原始 index，
-            // 但我們使用 ID 是為了在 renderList() 執行後能讓元素找到自己。
-            // 在 edit/delete 時，我們需要用新 index，所以需要重新比對。
-            
-            const items = currentData[activeDateKey].items;
-            
-            // 由於 items 已經被排序，我們需要用 activity 和 time 找回原始物件
-            // 由於我們沒有其他唯一 ID，這是一個潛在的風險，但目前只能假設
-            // 點擊 edit/delete 時，傳入的 itemId 對應的是當前 sorted list 的 index
-            return parseInt(index); 
-        }
-
-        // 修復: findItemIndexById 僅用於在執行時獲取當前渲染列表中的索引。
+        // 輔助函數：用於在排序後的列表中，找到點擊按鈕對應的索引
         function findCurrentIndex(itemId) {
             const [dateKey, index] = itemId.split('-');
             if (dateKey !== activeDateKey) return -1;
@@ -694,11 +670,7 @@
 
             currentData[activeDateKey].items.push({ time, activity, note, url });
             
-            // 在保存並重新渲染後，新的項目會被排序到正確位置。
-            // 這裡無法預知新項目的最終 index，所以我們將 hash 設定為最後一個 index 讓 init 函數處理
             const tempIndex = currentData[activeDateKey].items.length - 1; 
-            
-            // 將新增的項目 ID 寫入 URL hash，init() 執行 renderList() 後會找到並高亮它
             window.location.hash = `${activeDateKey}-${tempIndex}`; 
             saveAndRender(); 
         }
@@ -727,11 +699,11 @@
             item.note = newNote;
             item.url = newUrl.trim();
 
-            // 將編輯的項目 ID 寫入 URL hash，重新渲染後會找到並高亮它
             window.location.hash = itemId; 
             saveAndRender();
         }
 
+        // **刪除功能：已檢查並確保完整**
         window.deleteItem = function(itemId) {
             const index = findCurrentIndex(itemId);
             if (index === -1 || index >= currentData[activeDateKey].items.length) return;
@@ -760,4 +732,3 @@
     </script>
 </body>
 </html>
-
