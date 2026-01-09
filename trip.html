@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 岡山瀨戶內海之旅 (V8.0 時間排序與優化版) ✈️</title>
+    <title>2026 岡山旅伴 (V9.0 強化編輯版) ✈️</title>
     <style>
-        /* CSS 變數：所有顏色都定義在這裡 */
         :root {
-            --primary: #2c3e50; /* 主要強調色 (導覽列背景、標題) */
-            --accent: #e67e22;  /* 次要強調色 (卡片邊線、時間、Active Tab) */
-            --bg-color: #f4f6f7; /* 網頁背景色 */
-            --card-bg: #ffffff;  /* 卡片背景色 */
-            --text-color: #333;  /* 主要文字顏色 */
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #333;
             --btn-blue: #3498db;
             --btn-green: #2ecc71;
             --btn-red: #e74c3c;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -27,51 +26,29 @@
             height: 100vh;
         }
 
-        /* 頂部導覽列 */
+        /* 導覽列 */
         .header-bar {
             background: var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-        
-        .design-btn-container {
-            display: flex;
-            justify-content: flex-end;
-            padding: 5px 20px 0;
-        }
-
-        .design-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-bottom: 5px;
-        }
-        
-        .design-btn:hover { background: #d35400; }
 
         .date-tabs {
             display: flex;
             overflow-x: auto;
-            white-space: nowrap;
-            padding: 0 0 10px 0;
+            padding: 10px 0;
         }
 
         .date-tab {
             background: transparent;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.7);
             border: none;
             padding: 10px 20px;
-            font-size: 16px;
             cursor: pointer;
-            transition: 0.3s;
-            flex-shrink: 0;
+            white-space: nowrap;
+            font-size: 15px;
         }
 
         .date-tab.active {
@@ -80,655 +57,341 @@
             border-bottom: 3px solid var(--accent);
         }
 
-        /* 內容區域 */
+        /* 內容區 */
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            width: 100%;
-            box-sizing: border-box;
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px;
+            width: 100%;
+            box-sizing: border-box;
+            padding-bottom: 100px;
         }
 
-        h2 {
+        .location-header {
             text-align: center;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .day-info {
-            text-align: center;
-            color: #7f8c8d;
             margin-bottom: 20px;
-            font-size: 0.9em;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
         }
+        .location-header:hover { background: #eef2f3; }
+        .location-header h2 { margin: 0; color: var(--primary); }
+        .location-header p { margin: 5px 0; color: #7f8c8d; font-size: 0.9em; }
 
-        /* 行程卡片 */
+        /* 卡片設計 */
         .card {
             background: var(--card-bg);
             border-radius: 12px;
             padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             display: flex;
-            align-items: flex-start;
             border-left: 5px solid var(--accent);
-            transition: transform 0.2s;
+            position: relative;
         }
-        
-        /* 新增：用於編輯後高亮顯示 */
-        .card.highlight {
-            border: 2px solid var(--btn-blue);
-            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
-            animation: highlight-fade 2s forwards;
-        }
-        
-        @keyframes highlight-fade {
-            0% { transform: scale(1.02); }
-            50% { background-color: #f7fbfe; }
-            100% { transform: scale(1); background-color: var(--card-bg); border: 1px solid #ddd; }
-        }
-
 
         .time-box {
-            min-width: 65px;
+            min-width: 60px;
             font-weight: bold;
             color: var(--accent);
             font-size: 14px;
-            margin-right: 15px;
-            padding-top: 5px;
-        }
-        
-        .url-status {
-            font-size: 0.7em;
-            color: var(--btn-green);
-            margin-top: 3px;
-        }
-        
-        .content-box {
-            flex-grow: 1; /* 讓內容佔滿空間 */
-            padding-right: 10px;
-        }
-        
-        .activity {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 3px;
-        }
-        
-        .note {
-            font-size: 0.9em;
-            color: #7f8c8d;
         }
 
-        /* 操作按鈕區 */
-        .action-icons {
+        .content-box { flex: 1; margin-right: 10px; }
+        .activity { font-weight: bold; margin-bottom: 4px; }
+        .note { font-size: 0.85em; color: #7f8c8d; line-height: 1.4; }
+
+        .actions {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding-left: 10px;
-            border-left: 1px solid #eee;
+            gap: 10px;
+            justify-content: center;
         }
-        
-        .icon-btn {
+
+        .btn-sm {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 16px;
+            padding: 4px;
         }
-        
-        .icon-btn:hover { background-color: #f0f0f0; }
-        .btn-map { color: var(--btn-green); }
-        .btn-edit { color: var(--btn-blue); }
-        .btn-del { color: var(--btn-red); }
 
-        /* 底部浮動按鈕 (FAB) */
-        .fab-container {
+        /* 底部按鈕 */
+        .fab-group {
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             right: 20px;
             display: flex;
-            gap: 10px;
-            z-index: 200;
+            gap: 12px;
         }
 
         .fab {
-            background: var(--primary);
-            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
             border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            color: white;
             font-size: 24px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+        .fab-add { background: var(--primary); }
+        .fab-reset { background: var(--btn-red); font-size: 18px; }
 
-        .fab.reset { background: var(--btn-red); font-size: 18px; }
-
-        /* === Modal 樣式 (主題/新增/編輯 彈窗) === */
+        /* === 編輯彈窗 (Modal) === */
         .modal {
-            display: none; 
+            display: none;
             position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
             z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4); 
-            backdrop-filter: blur(3px);
             align-items: center;
             justify-content: center;
         }
 
         .modal-content {
-            background-color: var(--card-bg);
-            margin: auto;
-            padding: 20px;
-            border-radius: 10px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
             width: 90%;
-            max-width: 450px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            max-width: 400px;
         }
 
-        .close-btn {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close-btn:hover,
-        .close-btn:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        
-        .theme-previews {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .theme-card {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            border: 2px solid #ddd;
-            transition: border-color 0.2s;
-        }
-        
-        .theme-card.active {
-            border-color: var(--btn-blue);
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-        }
-
-        .theme-card div {
+        .modal-content h3 { margin-top: 0; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
+        .form-group input, .form-group textarea {
             width: 100%;
-            height: 20px;
-            margin-bottom: 5px;
-            border-radius: 3px;
-        }
-
-        /* 預覽顏色 */
-        .preview-setouchi .p-primary { background: #2c3e50; }
-        .preview-setouchi .p-accent { background: #e67e22; }
-        .preview-sakura .p-primary { background: #e91e63; }
-        .preview-sakura .p-accent { background: #ffc0cb; }
-        .preview-mono .p-primary { background: #333; }
-        .preview-mono .p-accent { background: #7f8c8d; }
-
-        /* 自訂顏色區 */
-        .custom-color-group {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .custom-color-group label {
-            width: 100px;
-            font-weight: bold;
-        }
-
-        .custom-color-group input[type="color"] {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            border: none;
-            width: 30px;
-            height: 30px;
-            padding: 0;
-            cursor: pointer;
-            border-radius: 50%;
-            outline: none;
-        }
-
-        .custom-color-group input[type="text"] {
-            flex-grow: 1;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
+            box-sizing: border-box;
         }
-        
-        .apply-custom-btn {
-            width: 100%;
-            background: var(--btn-blue);
-            color: white;
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
         }
-        
-        .apply-custom-btn:hover { background: #2980b9; }
+        .btn-save { background: var(--btn-blue); color: white; }
+        .btn-cancel { background: #eee; }
 
     </style>
 </head>
 <body>
-    
-    <div id="designModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">×</span>
-            <h3>🎨 網頁設計主題</h3>
-            <p>點擊下方主題即可預覽並套用：</p>
 
-            <div class="theme-previews">
-                <div class="theme-card preview-setouchi" onclick="applyTheme('setouchi')">
-                    <div class="p-primary"></div>
-                    <div class="p-accent"></div>
-                    <small>瀨戶內海藍</small>
-                </div>
+<div class="header-bar">
+    <div class="date-tabs" id="tabs-container"></div>
+</div>
 
-                <div class="theme-card preview-sakura" onclick="applyTheme('sakura')">
-                    <div class="p-primary"></div>
-                    <div class="p-accent"></div>
-                    <small>櫻花粉嫩風</small>
-                </div>
+<div class="container">
+    <div class="location-header" onclick="editDayHeader()">
+        <h2 id="display-label">讀取中...</h2>
+        <p id="display-location">點擊此處編輯標題與地點</p>
+    </div>
+    <div id="itinerary-list"></div>
+</div>
 
-                <div class="theme-card preview-mono" onclick="applyTheme('mono')">
-                    <div class="p-primary"></div>
-                    <div class="p-accent"></div>
-                    <small>極簡黑白灰</small>
-                </div>
-            </div>
+<div class="fab-group">
+    <button class="fab fab-reset" onclick="resetAll()">↻</button>
+    <button class="fab fab-add" onclick="openAddModal()">＋</button>
+</div>
 
-            <h4>自訂顏色 (HEX Code)</h4>
-            <div class="custom-color-group">
-                <label for="custom-primary">導覽列/標題色:</label>
-                <input type="color" id="color-primary" value="#2c3e50">
-                <input type="text" id="hex-primary" value="#2c3e50" oninput="document.getElementById('color-primary').value = this.value">
-            </div>
-            
-            <div class="custom-color-group">
-                <label for="custom-accent">強調/時間色:</label>
-                <input type="color" id="color-accent" value="#e67e22">
-                <input type="text" id="hex-accent" value="#e67e22" oninput="document.getElementById('color-accent').value = this.value">
-            </div>
-            
-            <button class="apply-custom-btn" onclick="applyCustomColors()">套用自訂顏色</button>
+<div id="itemModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modal-title">編輯行程</h3>
+        <input type="hidden" id="edit-index">
+        <div class="form-group">
+            <label>時間 (例如 09:00 或 上午)</label>
+            <input type="text" id="field-time">
+        </div>
+        <div class="form-group">
+            <label>活動地點/內容</label>
+            <input type="text" id="field-activity">
+        </div>
+        <div class="form-group">
+            <label>備註 (選填)</label>
+            <textarea id="field-note" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Google Map 連結 (選填)</label>
+            <input type="text" id="field-url" placeholder="https://...">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-cancel" onclick="closeModal()">取消</button>
+            <button class="btn btn-save" onclick="saveItem()">儲存行程</button>
         </div>
     </div>
+</div>
 
+<script>
+    // 預設資料
+    const defaultData = {
+        "2026-01-10": { label: "1/10 (六)", location: "📍 倉敷", items: [{ time: "上午", activity: "抵達倉敷 → 入住小木屋", note: "先寄放行李", url: "" }] },
+        "2026-01-11": { label: "1/11 (日)", location: "📍 直島", items: [{ time: "08:00", activity: "宇野港搭船", note: "往直島", url: "" }] }
+    };
 
-    <div class="header-bar">
-        <div class="design-btn-container">
-            <button class="design-btn" onclick="openModal()">🎨 設計主題</button>
-        </div>
-        <div class="date-tabs" id="tabs-container"></div>
-    </div>
+    let currentData = {};
+    let activeDateKey = "2026-01-10";
+    const STORAGE_KEY = "trip_data_v9";
 
-    <div class="container">
-        <h2 id="current-date-display"></h2>
-        <p class="day-info" id="current-location-display"></p>
+    function init() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        currentData = saved ? JSON.parse(saved) : defaultData;
+        
+        const keys = Object.keys(currentData).sort();
+        if (!currentData[activeDateKey]) activeDateKey = keys[0];
 
-        <div id="itinerary-list"></div>
-    </div>
+        renderTabs();
+        renderList();
+    }
 
-    <div class="fab-container">
-        <button class="fab reset" onclick="resetData()" title="重置行程">↻</button>
-        <button class="fab" onclick="addNewItem()" title="新增行程">＋</button>
-    </div>
+    function renderTabs() {
+        const container = document.getElementById('tabs-container');
+        container.innerHTML = '';
+        Object.keys(currentData).sort().forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = `date-tab ${key === activeDateKey ? 'active' : ''}`;
+            btn.innerText = currentData[key].label;
+            btn.onclick = () => { activeDateKey = key; renderTabs(); renderList(); };
+            container.appendChild(btn);
+        });
+    }
 
-    <script>
-        // --- 主題設定 ---
-        const THEMES = {
-            'setouchi': { 
-                name: '瀨戶內海藍', primary: '#2c3e50', accent: '#e67e22', bg: '#f4f6f7', card: '#ffffff', text: '#333'
-            },
-            'sakura': { 
-                name: '櫻花粉嫩風', primary: '#e91e63', accent: '#ffc0cb', bg: '#fff0f5', card: '#ffffff', text: '#555'
-            },
-            'mono': { 
-                name: '極簡黑白灰', primary: '#333333', accent: '#7f8c8d', bg: '#ffffff', card: '#f5f5f5', text: '#222'
-            }
+    function renderList() {
+        const day = currentData[activeDateKey];
+        document.getElementById('display-label').innerText = day.label;
+        document.getElementById('display-location').innerText = day.location;
+
+        const list = document.getElementById('itinerary-list');
+        list.innerHTML = '';
+
+        // 排序邏輯
+        day.items.sort((a, b) => timeToVal(a.time) - timeToVal(b.time));
+
+        day.items.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="time-box">${item.time}</div>
+                <div class="content-box">
+                    <div class="activity">${item.activity}</div>
+                    <div class="note">${item.note}</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-sm" onclick="openEditModal(${index})">✏️</button>
+                    <button class="btn-sm" onclick="deleteItem(${index})">🗑️</button>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    // --- Modal 控制 ---
+    function openAddModal() {
+        document.getElementById('modal-title').innerText = "新增行程";
+        document.getElementById('edit-index').value = "-1";
+        document.getElementById('field-time').value = "";
+        document.getElementById('field-activity').value = "";
+        document.getElementById('field-note').value = "";
+        document.getElementById('field-url').value = "";
+        document.getElementById('itemModal').style.display = 'flex';
+    }
+
+    function openEditModal(index) {
+        const item = currentData[activeDateKey].items[index];
+        document.getElementById('modal-title').innerText = "編輯行程";
+        document.getElementById('edit-index').value = index;
+        document.getElementById('field-time').value = item.time;
+        document.getElementById('field-activity').value = item.activity;
+        document.getElementById('field-note').value = item.note;
+        document.getElementById('field-url').value = item.url || "";
+        document.getElementById('itemModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('itemModal').style.display = 'none';
+    }
+
+    function saveItem() {
+        const idx = parseInt(document.getElementById('edit-index').value);
+        const newItem = {
+            time: document.getElementById('field-time').value || "未定",
+            activity: document.getElementById('field-activity').value || "新活動",
+            note: document.getElementById('field-note').value,
+            url: document.getElementById('field-url').value
         };
 
-        // --- 行程資料 ---
-        const defaultData = {
-            "2026-01-10": { label: "1/10 (六)", location: "📍 倉敷", items: [{ time: "上午", activity: "抵達倉敷 → 入住小木屋", note: "先寄放行李或辦理入住", url: "" }, { time: "下午", activity: "倉敷美觀地區", note: "大原美術館、運河散步", url: "" }, { time: "晚上", activity: "倉敷老街晚餐", note: "找間咖啡廳或小酒館享受氛圍", url: "" }, { time: "住宿", activity: "倉敷小木屋", note: "休息養精蓄銳", url: "" }] },
-            "2026-01-11": { label: "1/11 (日)", location: "📍 直島一日遊", items: [{ time: "08:00", activity: "宇野港", note: "搭船前往直島宮浦港", url: "" }, { time: "上午", activity: "直島家計劃", note: "ANDO MUSEUM、南寺、碁會所/角屋", url: "" }, { time: "中午", activity: "本村午餐", note: "本村地區享用午餐", url: "" }, { time: "下午", activity: "Benesse House Museum", note: "戶外作品散步、必拍黃南瓜🟡", url: "" }, { time: "傍晚", activity: "宇野港", note: "搭船回程 → 回倉敷", url: "" }] },
-            "2026-01-12": { label: "1/12 (一)", location: "📍 倉敷 → 尾道", items: [{ time: "上午", activity: "移動到尾道", note: "車程約 1.5 小時", url: "" }, { time: "11:00", activity: "尾道本通り商店街", note: "老街散步、貓之小巷、坂道拍照", url: "" }, { time: "下午", activity: "千光寺公園", note: "搭纜車欣賞瀨戶內海景色", url: "" }, { time: "晚上", activity: "尾道みはらし亭", note: "入住 Guest House，夜景散步", url: "" }] },
-            "2026-01-13": { label: "1/13 (二)", location: "📍 尾道／跳島", items: [{ time: "上午", activity: "向島", note: "或生口島，租借自行車散步拍照🚲", url: "" }, { time: "下午", activity: "尾道市區", note: "電影街道拍照、特色小店", url: "" }, { time: "晚上", activity: "尾道みはらし亭", note: "休息", url: "" }] },
-            "2026-01-14": { label: "1/14 (三)", location: "📍 尾道 → 蒜山", items: [{ time: "上午", activity: "移動到蒜山", note: "車程約 2 小時", url: "" }, { time: "下午", activity: "蒜山高原中心 Joyful Park", note: "牧場餵羊🐑、散步", url: "" }, { time: "晚上", activity: "蒜山萬楓酒店", note: "晚餐 & 住宿", url: "" }] },
-            "2026-01-15": { label: "1/15 (四)", location: "📍 蒜山放鬆日", items: [{ time: "上午", activity: "道の駅 風の家", note: "逛蒜山土產店", url: "" }, { time: "下午", activity: "蒜山溫泉", note: "高原散策、泡溫泉放鬆", url: "" }, { time: "晚上", activity: "蒜山萬楓酒店", note: "住宿", url: "" }] },
-            "2026-01-16": { label: "1/16 (五)", location: "📍 蒜山 → 岡山市區", items: [{ time: "上午", activity: "移動到岡山", note: "車程約 1.5 小時", url: "" }, { time: "下午", activity: "岡山後樂園", note: "日本三大名園之一 + 岡山城", url: "" }, { time: "晚上", activity: "表町商店街", note: "桃太郎通逛街、美食", url: "" }, { time: "住宿", activity: "岡山市區", note: "找一間喜歡的飯店", url: "" }] },
-            "2026-01-17": { label: "1/17 (六)", location: "📍 小豆島 或 市區深度", items: [{ time: "選項A", activity: "小豆島天使之路", note: "宇野港→土庄港。醬之鄉、寒霞溪", url: "" }, { time: "選項B", activity: "吉備津神社", note: "市區深度遊、烏城公園、最後採購", url: "" }, { time: "晚上", activity: "整理行李", note: "準備明天回程", url: "" }] },
-            "2026-01-18": { label: "1/18 (日)", location: "📍 岡山 → 機場", items: [{ time: "上午", activity: "岡山市區", note: "早餐、最後散步", url: "" }, { time: "11:00", activity: "岡山桃太郎機場", note: "出發前往機場", url: "" }, { time: "15:00", activity: "飛機起飛", note: "Bye Bye 岡山！", url: "" }] }
-        };
-
-        // 狀態管理
-        let currentData = {};
-        let activeDateKey = "2026-01-10";
-        const root = document.documentElement;
-        const DATA_STORAGE_KEY = 'trip_data_v7'; 
-
-        // --- 主題函數 ---
-        function saveTheme(themeName, colors = null) {
-            const themeToSave = colors || THEMES[themeName];
-            localStorage.setItem('tripTheme', JSON.stringify(themeToSave));
-            document.getElementById('color-primary').value = themeToSave.primary;
-            document.getElementById('hex-primary').value = themeToSave.primary;
-            document.getElementById('color-accent').value = themeToSave.accent;
-            document.getElementById('hex-accent').value = themeToSave.accent;
+        if (idx === -1) {
+            currentData[activeDateKey].items.push(newItem);
+        } else {
+            currentData[activeDateKey].items[idx] = newItem;
         }
 
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('tripTheme');
-            let theme = savedTheme ? JSON.parse(savedTheme) : THEMES['setouchi']; 
-            applyColors(theme);
-            saveTheme(null, theme); 
-        }
+        saveAndSync();
+        closeModal();
+    }
 
-        function applyColors(colors) {
-            root.style.setProperty('--primary', colors.primary);
-            root.style.setProperty('--accent', colors.accent);
-            root.style.setProperty('--bg-color', colors.bg);
-            root.style.setProperty('--card-bg', colors.card);
-            root.style.setProperty('--text-color', colors.text);
-            
-            document.querySelectorAll('.theme-card').forEach(card => card.classList.remove('active'));
-            if (colors.name && THEMES[Object.keys(THEMES).find(key => THEMES[key].name === colors.name)]) {
-                document.querySelector(`.preview-${Object.keys(THEMES).find(key => THEMES[key].name === colors.name)}`).classList.add('active');
-            }
+    function deleteItem(index) {
+        if (confirm("確定刪除這項行程嗎？")) {
+            currentData[activeDateKey].items.splice(index, 1);
+            saveAndSync();
         }
+    }
 
-        function applyTheme(themeName) {
-            const theme = THEMES[themeName];
-            applyColors(theme);
-            saveTheme(themeName);
-        }
-
-        function applyCustomColors() {
-            const customColors = {
-                primary: document.getElementById('hex-primary').value.trim(),
-                accent: document.getElementById('hex-accent').value.trim(),
-                bg: '#f4f6f7', 
-                card: '#ffffff',
-                text: '#333',
-                name: '自訂主題'
-            };
-            applyColors(customColors);
-            saveTheme(null, customColors);
-            closeModal();
-        }
-
-        // --- Modal 函數 ---
-        const modal = document.getElementById('designModal');
-        function openModal() { modal.style.display = 'flex'; }
-        function closeModal() { modal.style.display = 'none'; }
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
+    function editDayHeader() {
+        const day = currentData[activeDateKey];
+        const newLabel = prompt("修改日期顯示 (如: 1/10 六):", day.label);
+        if (newLabel === null) return;
+        const newLoc = prompt("修改地點 (如: 📍 倉敷):", day.location);
+        if (newLoc === null) return;
         
-        // --- 行程函數 ---
+        day.label = newLabel;
+        day.location = newLoc;
+        saveAndSync();
+        renderTabs();
+    }
 
-        /**
-         * 輔助函數：將時間格式轉換為數字，以便進行排序。
-         */
-        function timeToSortableValue(timeString) {
-            const t = timeString.trim().toLowerCase();
-            if (t.match(/^\d{1,2}:\d{2}$/)) { 
-                const parts = t.split(':');
-                return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-            }
-            
-            // 處理非標準時間關鍵字，賦予固定數值進行排序
-            switch (t) {
-                case '選項a': return 600; // 10:00
-                case '上午': return 660; // 11:00
-                case '中午': return 720; // 12:00
-                case '下午': return 840; // 14:00
-                case '傍晚': return 960; // 16:00
-                case '晚上': return 1140; // 19:00
-                case '選項b': return 1260; // 21:00
-                case '住宿': return 1380; // 23:00
-                default:
-                    // 其他文字排在最後
-                    return 9999;
-            }
+    function saveAndSync() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+        renderList();
+    }
+
+    function resetAll() {
+        if (confirm("確定要清除所有改動並重置嗎？")) {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
         }
-        
-        function init() {
-            loadTheme();
-            const saved = localStorage.getItem(DATA_STORAGE_KEY);
-            
-            if (saved) {
-                try {
-                    currentData = JSON.parse(saved);
-                } catch (e) {
-                    currentData = JSON.parse(JSON.stringify(defaultData));
-                    console.error("Local data corrupted, using default data.", e);
-                }
-            } else {
-                currentData = JSON.parse(JSON.stringify(defaultData));
-            }
-            
-            const dateKeys = Object.keys(currentData).sort();
-            if (!currentData[activeDateKey] && dateKeys.length > 0) {
-                activeDateKey = dateKeys[0];
-            }
-            
-            // 確保每個項目都有 url 欄位
-            dateKeys.forEach(dateKey => {
-                currentData[dateKey].items.forEach(item => {
-                    if (item.url === undefined) { item.url = ""; }
-                });
-            });
+    }
 
-            renderTabs();
-            renderList();
-            
-            // 檢查 URL hash (用於跳轉/高亮)
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const element = document.getElementById(hash);
-                if (element) {
-                    element.classList.add('highlight');
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    setTimeout(() => {
-                        window.history.replaceState(null, null, window.location.pathname + window.location.search);
-                    }, 2000); 
-                }
-            }
+    function timeToVal(s) {
+        const t = s.trim().toLowerCase();
+        if (t.match(/^\d/)) {
+            const p = t.split(':');
+            return parseInt(p[0]) * 60 + (parseInt(p[1]) || 0);
         }
+        if (t.includes("上")) return 600;
+        if (t.includes("中")) return 720;
+        if (t.includes("下")) return 840;
+        if (t.includes("晚")) return 1100;
+        return 9999;
+    }
 
-        function renderTabs() { 
-            const container = document.getElementById('tabs-container');
-            container.innerHTML = '';
-            
-            Object.keys(currentData).sort().forEach(key => {
-                const btn = document.createElement('button');
-                btn.className = `date-tab ${key === activeDateKey ? 'active' : ''}`;
-                btn.innerText = currentData[key].label;
-                btn.onclick = () => {
-                    activeDateKey = key;
-                    renderTabs();
-                    renderList();
-                };
-                container.appendChild(btn);
-            });
-        }
-        
-        function renderList() { 
-            const dayData = currentData[activeDateKey];
-            document.getElementById('current-date-display').innerText = dayData.label;
-            document.getElementById('current-location-display').innerText = dayData.location;
-            
-            const list = document.getElementById('itinerary-list');
-            list.innerHTML = '';
-            
-            // 根據 time 欄位進行排序
-            dayData.items.sort((a, b) => {
-                return timeToSortableValue(a.time) - timeToSortableValue(b.time);
-            });
-            
-            dayData.items.forEach((item, index) => {
-                let mapUrl;
-                let mapIcon;
-
-                if (item.url && item.url.trim() !== '') {
-                    mapUrl = item.url;
-                    mapIcon = '🔗';
-                } else {
-                    const mapQuery = encodeURIComponent(item.activity + " " + dayData.location.replace("📍 ", ""));
-                    // 修正 Google Maps 搜尋連結
-                    mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-                    mapIcon = '🗺️';
-                }
-
-                const urlStatusHtml = (item.url && item.url.trim() !== '') 
-                    ? `<div class="url-status"> (已連結) </div>` 
-                    : '';
-                
-                // 為每個卡片添加一個獨特的 ID，用於跳轉和高亮
-                const itemId = `${activeDateKey}-${index}`;
-
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.id = itemId; // 設定 ID
-                div.innerHTML = `
-                    <div class="time-box">${item.time}</div>
-                    <div class="content-box">
-                        <div class="activity">${item.activity}</div>
-                        <div class="note">${item.note}</div>
-                        ${urlStatusHtml}
-                    </div>
-                    <div class="action-icons">
-                        <a href="${mapUrl}" target="_blank" class="icon-btn btn-map" title="${item.url ? '打開精確連結' : 'Google Map 搜尋'}">
-                            ${mapIcon}
-                        </a>
-                        <button class="icon-btn btn-edit" onclick="editItem('${itemId}')" title="編輯">
-                            ✏️
-                        </button>
-                        <button class="icon-btn btn-del" onclick="deleteItem('${itemId}')" title="刪除">
-                            ✕
-                        </button>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        // 輔助函數：用於在排序後的列表中，找到點擊按鈕對應的索引
-        function findCurrentIndex(itemId) {
-            const [dateKey, index] = itemId.split('-');
-            if (dateKey !== activeDateKey) return -1;
-            return parseInt(index);
-        }
-
-        window.addNewItem = function() {
-            const time = prompt("輸入時間 (如: 14:00 或 上午):");
-            if(time === null || time.trim() === '') return;
-            
-            const activity = prompt("輸入地點/活動 (如: 岡山城):");
-            if(!activity || activity.trim() === '') return;
-
-            const note = prompt("備註:") || "";
-            const url = prompt("Google Map 連結 (可選，直接貼上網址):") || "";
-
-            currentData[activeDateKey].items.push({ time, activity, note, url });
-            
-            const tempIndex = currentData[activeDateKey].items.length - 1; 
-            window.location.hash = `${activeDateKey}-${tempIndex}`; 
-            saveAndRender(); 
-        }
-
-        window.editItem = function(itemId) {
-            const index = findCurrentIndex(itemId);
-            if (index === -1 || index >= currentData[activeDateKey].items.length) return;
-
-            const item = currentData[activeDateKey].items[index];
-            
-            const newTime = prompt("修改時間 (會自動排序):", item.time);
-            if (newTime === null) return;
-
-            const newActivity = prompt("修改地點/活動:", item.activity);
-            if (newActivity === null) return;
-
-            const newNote = prompt("修改備註:", item.note);
-            if (newNote === null) return;
-            
-            const newUrl = prompt("修改 Google Map 連結:", item.url || "");
-            if (newUrl === null) return;
-
-            // 更新資料
-            item.time = newTime;
-            item.activity = newActivity;
-            item.note = newNote;
-            item.url = newUrl.trim();
-
-            window.location.hash = itemId; 
-            saveAndRender();
-        }
-
-        // **刪除功能：已檢查並確保完整**
-        window.deleteItem = function(itemId) {
-            const index = findCurrentIndex(itemId);
-            if (index === -1 || index >= currentData[activeDateKey].items.length) return;
-            
-            if(confirm("確定刪除此項目？")) {
-                currentData[activeDateKey].items.splice(index, 1);
-                saveAndRender();
-            }
-        }
-
-        window.resetData = function() {
-            if(confirm("警告：確定要重置回預設行程嗎？所有修改將永久消失。")) {
-                localStorage.removeItem(DATA_STORAGE_KEY); 
-                localStorage.removeItem('tripTheme'); 
-                location.reload(); 
-            }
-        }
-
-        function saveAndRender() {
-            localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(currentData));
-            renderList();
-        }
-
-        // 啟動
-        init();
-    </script>
+    init();
+</script>
 </body>
 </html>
